@@ -305,17 +305,6 @@ button:disabled {
   flex: 1;
 }
 
-.bio-block {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border-left: 3px solid var(--gold);
-  background: var(--parchment);
-  border-radius: 0 4px 4px 0;
-  font-style: italic;
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.7;
-}
 
 /* ── Chips ───────────────────────────────────────────────────────── */
 .chips-row {
@@ -633,21 +622,17 @@ textarea {
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label for="f-death">Death Year</label>
-          <input type="number" id="f-death" placeholder="Leave blank if living" min="1600" max="2030">
-        </div>
-        <div class="form-group">
           <label for="f-parent">Parent</label>
           <select id="f-parent"><option value="">— none —</option></select>
         </div>
+        <div class="form-group">
+          <label for="f-spouse">Spouse</label>
+          <select id="f-spouse"><option value="">— none —</option></select>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="f-spouse">Spouse</label>
-        <select id="f-spouse"><option value="">— none —</option></select>
-      </div>
-      <div class="form-group">
-        <label for="f-bio">Biography / Notes</label>
-        <textarea id="f-bio" placeholder="Occupation, origin, notable achievements…"></textarea>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:4px">
+        <input type="checkbox" id="f-deceased" style="width:auto;min-height:auto;accent-color:var(--teal)">
+        <label for="f-deceased" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);cursor:pointer">Deceased</label>
       </div>
       <div class="form-actions">
         <button class="btn-primary" onclick="App.submitAdd()">Add Member</button>
@@ -679,7 +664,7 @@ textarea {
    Fully compatible with GitHub Pages static hosting
    ================================================================ */
 
-const STORAGE_KEY = 'shajra_people_v1';
+const STORAGE_KEY = 'shajra_people_v2';
 const SEED_URL    = 'data/family.json';
 
 // Layout constants
@@ -888,7 +873,7 @@ function render() {
     if (!pos) return;
 
     const isRoot     = !p.parentId;
-    const isDeceased = p.death !== null && p.death !== undefined;
+    const isDeceased = p.death === true;
     const isSelected = p.id === selectedId;
 
     const strokeColor = isSelected ? '#8B3A1E'
@@ -949,16 +934,16 @@ function render() {
     nameText.style.pointerEvents = 'none';
     g.appendChild(nameText);
 
-    // Years
-    const birthStr = p.birth || '?';
-    const deathStr = p.death ? String(p.death) : 'living';
+    // Birth year + status
+    const birthStr = p.birth ? `b. ${p.birth}` : '?';
+    const statusStr = p.death ? ' · †' : '';
     const yearsText = document.createElementNS(NS, 'text');
     yearsText.setAttribute('x', pos.x + 8);
     yearsText.setAttribute('y', pos.y + 38);
     yearsText.setAttribute('font-family', 'Cormorant Garamond, serif');
     yearsText.setAttribute('font-size', '11');
     yearsText.setAttribute('fill', '#6B5C40');
-    yearsText.textContent = `${birthStr} – ${deathStr}`;
+    yearsText.textContent = `${birthStr}${statusStr}`;
     yearsText.style.pointerEvents = 'none';
     g.appendChild(yearsText);
 
@@ -1057,8 +1042,8 @@ function updateDetail() {
       <span class="detail-row-value">${p.birth || '—'}</span>
     </div>
     <div class="detail-row">
-      <span class="detail-row-label">Died</span>
-      <span class="detail-row-value">${p.death ? p.death : 'Living'}</span>
+      <span class="detail-row-label">Status</span>
+      <span class="detail-row-value">${p.death ? 'Deceased' : 'Living'}</span>
     </div>`;
 
   if (parent) {
@@ -1091,10 +1076,6 @@ function updateDetail() {
     </div>`;
   }
 
-  if (p.bio) {
-    html += `<div class="bio-block">${esc(p.bio)}</div>`;
-  }
-
   content.innerHTML = html;
 }
 
@@ -1117,7 +1098,8 @@ const App = {
 
   hideAddForm() {
     document.getElementById('add-form').style.display = 'none';
-    ['f-name','f-arabic','f-birth','f-death','f-bio'].forEach(id => document.getElementById(id).value = '');
+    ['f-name','f-arabic','f-birth'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-deceased').checked = false;
     document.getElementById('f-gender').value = 'M';
     document.getElementById('f-parent').value = '';
     document.getElementById('f-spouse').value = '';
@@ -1133,10 +1115,9 @@ const App = {
       arabic:   document.getElementById('f-arabic').value.trim() || null,
       gender:   document.getElementById('f-gender').value,
       birth:    parseInt(document.getElementById('f-birth').value) || null,
-      death:    parseInt(document.getElementById('f-death').value) || null,
+      death:    document.getElementById('f-deceased').checked,
       parentId: parseInt(document.getElementById('f-parent').value) || null,
-      spouseId: parseInt(document.getElementById('f-spouse').value) || null,
-      bio:      document.getElementById('f-bio').value.trim() || null
+      spouseId: parseInt(document.getElementById('f-spouse').value) || null
     };
 
     // Reciprocate spouse link

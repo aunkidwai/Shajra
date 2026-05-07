@@ -5,10 +5,9 @@
     "arabic": "إبراهيم الرشيد",
     "gender": "M",
     "birth": 1880,
-    "death": 1955,
+    "death": true,
     "parentId": null,
-    "spouseId": 2,
-    "bio": "Patriarch of the Al-Rashid family. Migrated from Lahore to Delhi in 1905. Known for his scholarship in classical Arabic and Persian literature."
+    "spouseId": 2
   },
   {
     "id": 2,
@@ -16,10 +15,9 @@
     "arabic": "فاطمہ بیگم",
     "gender": "F",
     "birth": 1885,
-    "death": 1960,
+    "death": true,
     "parentId": null,
-    "spouseId": 1,
-    "bio": "Matriarch of the family. Renowned for her knowledge of herbal medicine and her role in the community as an educator of young women."
+    "spouseId": 1
   },
   {
     "id": 3,
@@ -27,10 +25,9 @@
     "arabic": "یوسف الرشید",
     "gender": "M",
     "birth": 1910,
-    "death": 1978,
+    "death": true,
     "parentId": 1,
-    "spouseId": 4,
-    "bio": "Eldest son of Ibrahim. Served as a civil officer during the transition period. Settled in Karachi after partition."
+    "spouseId": 4
   },
   {
     "id": 4,
@@ -38,10 +35,9 @@
     "arabic": "زینب نور",
     "gender": "F",
     "birth": 1915,
-    "death": 1990,
+    "death": true,
     "parentId": null,
-    "spouseId": 3,
-    "bio": "Married into the Al-Rashid family in 1932. Known for her poetry, some of which was published in Urdu literary journals of the era."
+    "spouseId": 3
   },
   {
     "id": 5,
@@ -49,10 +45,9 @@
     "arabic": "مریم الرشید",
     "gender": "F",
     "birth": 1912,
-    "death": 1995,
+    "death": true,
     "parentId": 1,
-    "spouseId": null,
-    "bio": "Daughter of Ibrahim. Became a teacher and never married by choice. Dedicated her life to education in rural areas."
+    "spouseId": null
   },
   {
     "id": 6,
@@ -60,10 +55,9 @@
     "arabic": "حسن الرشید",
     "gender": "M",
     "birth": 1935,
-    "death": null,
+    "death": false,
     "parentId": 3,
-    "spouseId": 7,
-    "bio": "Son of Yusuf. Engineer by profession. Lived in Karachi until 1985, then moved to Toronto."
+    "spouseId": 7
   },
   {
     "id": 7,
@@ -71,10 +65,9 @@
     "arabic": "آمنہ صدیقی",
     "gender": "F",
     "birth": 1938,
-    "death": null,
+    "death": false,
     "parentId": null,
-    "spouseId": 6,
-    "bio": "Wife of Hassan. Active community organiser in the Pakistani diaspora in Toronto."
+    "spouseId": 6
   },
   {
     "id": 8,
@@ -82,10 +75,9 @@
     "arabic": "عمر الرشید",
     "gender": "M",
     "birth": 1937,
-    "death": 2010,
+    "death": true,
     "parentId": 3,
-    "spouseId": 9,
-    "bio": "Second son of Yusuf. Worked as a journalist and editor for a prominent Urdu newspaper in Karachi."
+    "spouseId": 9
   },
   {
     "id": 9,
@@ -93,10 +85,9 @@
     "arabic": "رقیہ خان",
     "gender": "F",
     "birth": 1942,
-    "death": null,
+    "death": false,
     "parentId": null,
-    "spouseId": 8,
-    "bio": "Wife of Omar. Retired school principal."
+    "spouseId": 8
   },
   {
     "id": 10,
@@ -104,10 +95,9 @@
     "arabic": "لیلیٰ الرشید",
     "gender": "F",
     "birth": 1962,
-    "death": null,
+    "death": false,
     "parentId": 6,
-    "spouseId": null,
-    "bio": "Daughter of Hassan and Amina. Software engineer based in Toronto. Passionate about preserving family heritage through technology."
+    "spouseId": null
   },
   {
     "id": 11,
@@ -115,10 +105,9 @@
     "arabic": "خالد الرشید",
     "gender": "M",
     "birth": 1965,
-    "death": null,
+    "death": false,
     "parentId": 6,
-    "spouseId": 12,
-    "bio": "Son of Hassan and Amina. Physician specialising in cardiology. Lives in London."
+    "spouseId": 12
   },
   {
     "id": 12,
@@ -126,10 +115,9 @@
     "arabic": "ثنا مرزا",
     "gender": "F",
     "birth": 1968,
-    "death": null,
+    "death": false,
     "parentId": null,
-    "spouseId": 11,
-    "bio": "Wife of Khalid. Architect and urban planner."
+    "spouseId": 11
   },
   {
     "id": 13,
@@ -137,10 +125,9 @@
     "arabic": "زید الرشید",
     "gender": "M",
     "birth": 1965,
-    "death": null,
+    "death": false,
     "parentId": 8,
-    "spouseId": null,
-    "bio": "Son of Omar. Academic researcher specialising in South Asian history."
+    "spouseId": null
   },
   {
     "id": 14,
@@ -148,10 +135,9 @@
     "arabic": "نور الرشید",
     "gender": "F",
     "birth": 1968,
-    "death": null,
+    "death": false,
     "parentId": 8,
-    "spouseId": null,
-    "bio": "Daughter of Omar and Ruqayyah. Journalist and documentary filmmaker."
+    "spouseId": null
   },
   {
     "id": 15,
@@ -159,10 +145,9 @@
     "arabic": "آدم الرشید",
     "gender": "M",
     "birth": 1995,
-    "death": null,
+    "death": false,
     "parentId": 11,
-    "spouseId": null,
-    "bio": "Son of Khalid and Sana. Medical student in London."
+    "spouseId": null
   },
   {
     "id": 16,
@@ -170,9 +155,8 @@
     "arabic": "سارہ الرشید",
     "gender": "F",
     "birth": 1998,
-    "death": null,
+    "death": false,
     "parentId": 11,
-    "spouseId": null,
-    "bio": "Daughter of Khalid and Sana. Architecture student, following in her mother's footsteps."
+    "spouseId": null
   }
 ]
