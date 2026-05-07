@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شَجَرَة · Shajra — Family Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+/* ── Design Tokens ───────────────────────────────────────────────── */
+:root {
+  --ink:            #111111;
+  --parchment:      #F5EDD8;
+  --parchment-dark: #E8D9B8;
+  --gold:           #C49A2A;
+  --gold-light:     #E4C06A;
+  --teal:           #2A6B6E;
+  --rust:           #8B3A1E;
+  --muted:          #6B5C40;
+  --border:         #C8B07A;
+  --shadow:         rgba(100,70,20,0.15);
+}
+
+/* ── Reset & Base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background-color: var(--parchment);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30Z' fill='none' stroke='%23C49A2A' stroke-width='0.5' opacity='0.06'/%3E%3Cpath d='M30 15 L45 30 L30 45 L15 30Z' fill='none' stroke='%23C49A2A' stroke-width='0.5' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* ── Scrollbars ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--parchment-dark); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── Header ──────────────────────────────────────────────────────── */
+header {
+  text-align: center;
+  padding: 40px 20px 28px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+header::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 20px auto 0;
+}
+
+.header-ornament {
+  color: var(--gold);
+  font-size: 22px;
+  letter-spacing: 12px;
+  display: block;
+  margin-bottom: 8px;
+  font-family: 'Amiri', serif;
+}
+
+h1 {
+  font-family: 'Amiri', serif;
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--parchment-dark);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.toolbar-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+
+button {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--parchment);
+  color: var(--ink);
+  padding: 6px 14px;
+  border-radius: 4px;
+  transition: all 200ms ease;
+  letter-spacing: 0.3px;
+  min-height: 34px;
+}
+
+button:hover {
+  background: var(--gold-light);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+button.btn-primary {
+  background: var(--rust);
+  color: #fff;
+  border-color: var(--rust);
+}
+button.btn-primary:hover {
+  background: #A34524;
+  border-color: #A34524;
+  color: #fff;
+}
+
+button.btn-icon {
+  padding: 6px 10px;
+  font-size: 16px;
+  color: var(--muted);
+}
+button.btn-icon:hover { color: var(--ink); }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Main Layout ─────────────────────────────────────────────────── */
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 0;
+  height: calc(100vh - 190px);
+  min-height: 500px;
+}
+
+/* ── Tree Panel ──────────────────────────────────────────────────── */
+.tree-panel {
+  overflow: auto;
+  padding: 24px;
+  border-right: 1px solid var(--border);
+  position: relative;
+  background: var(--parchment);
+}
+
+.tree-panel svg {
+  display: block;
+  overflow: visible;
+}
+
+/* ── Generation Labels ───────────────────────────────────────────── */
+.gen-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-style: italic;
+  fill: var(--gold);
+  letter-spacing: 1px;
+}
+
+/* ── SVG Node Styles (applied via JS) ───────────────────────────── */
+/* defined inline in JS for SVG elements */
+
+/* ── Sidebar ─────────────────────────────────────────────────────── */
+.sidebar {
+  overflow-y: auto;
+  padding: 20px;
+  background: var(--parchment);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Stats Panel ─────────────────────────────────────────────────── */
+.stats-panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-box {
+  background: var(--parchment-dark);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: 'Amiri', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--teal);
+  display: block;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── Detail Card ─────────────────────────────────────────────────── */
+.detail-card {
+  background: var(--parchment-dark);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  min-height: 200px;
+}
+
+.detail-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.detail-name {
+  font-family: 'Amiri', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.detail-arabic {
+  font-family: 'Amiri', serif;
+  font-size: 20px;
+  color: var(--gold);
+  direction: rtl;
+  text-align: right;
+  display: block;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.detail-divider {
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+  margin: 12px 0;
+}
+
+.detail-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.detail-row-label {
+  color: var(--muted);
+  font-weight: 600;
+  min-width: 72px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-top: 2px;
+}
+
+.detail-row-value {
+  color: var(--ink);
+  flex: 1;
+}
+
+.bio-block {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--gold);
+  background: var(--parchment);
+  border-radius: 0 4px 4px 0;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ── Chips ───────────────────────────────────────────────────────── */
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.chip {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  background: var(--parchment);
+  color: var(--teal);
+  transition: all 200ms ease;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+/* ── Add Member Form ─────────────────────────────────────────────── */
+.form-card {
+  background: var(--parchment-dark);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.form-title {
+  font-family: 'Amiri', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--rust);
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--parchment);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 200ms ease;
+  min-height: 36px;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--teal);
+}
+
+textarea {
+  min-height: 72px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.form-actions button {
+  flex: 1;
+}
+
+/* ── Legend ──────────────────────────────────────────────────────── */
+.legend {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  background: var(--parchment-dark);
+}
+
+.legend-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.legend-swatch {
+  width: 22px;
+  height: 14px;
+  border-radius: 3px;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.legend-swatch.root   { border-color: var(--gold); border-width: 2px; }
+.legend-swatch.male   { border-color: var(--teal); }
+.legend-swatch.female { border-color: var(--rust); }
+.legend-swatch.deceased { background: #ccc; border-color: #999; }
+
+/* ── Toast ───────────────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--rust);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 300ms ease, transform 300ms ease;
+  pointer-events: none;
+  z-index: 1000;
+  max-width: 320px;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#toast.success { background: var(--teal); }
+
+/* ── Loading overlay ─────────────────────────────────────────────── */
+#loading {
+  position: fixed;
+  inset: 0;
+  background: var(--parchment);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  flex-direction: column;
+  gap: 16px;
+  transition: opacity 400ms ease;
+}
+#loading.hidden { opacity: 0; pointer-events: none; }
+
+.loading-text {
+  font-family: 'Amiri', serif;
+  font-size: 28px;
+  color: var(--gold);
+  letter-spacing: 3px;
+}
+
+.loading-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .tree-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    min-height: 420px;
+    max-height: 60vh;
+  }
+  .sidebar {
+    padding: 16px;
+  }
+  .stats-panel {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  header { padding: 24px 16px 20px; }
+  .toolbar { padding: 10px 16px; }
+  .stats-panel { grid-template-columns: repeat(2, 1fr); }
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* ── Import file input (hidden) ──────────────────────────────────── */
+#file-input { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loading">
+  <div class="loading-text">شَجَرَة</div>
+  <div class="loading-sub">Loading family tree…</div>
+</div>
+
+<!-- Header -->
+<header>
+  <span class="header-ornament">❧</span>
+  <h1>شَجَرَة &middot; Shajra</h1>
+  <p class="subtitle">Genealogical Family Tree</p>
+</header>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="toolbar-group">
+    <span class="toolbar-label">Zoom</span>
+    <button class="btn-icon" onclick="App.zoomIn()" title="Zoom In">+</button>
+    <button class="btn-icon" onclick="App.zoomOut()" title="Zoom Out">−</button>
+    <button class="btn-icon" onclick="App.zoomReset()" title="Reset View">⊙</button>
+    <button class="btn-icon" onclick="App.expandAll()" title="Expand All">⊞</button>
+  </div>
+  <div class="toolbar-group">
+    <button onclick="App.showAddForm()" class="btn-primary">+ Add Member</button>
+    <button onclick="App.exportJSON()" title="Export tree as JSON">⬇ Export</button>
+    <button onclick="document.getElementById('file-input').click()" title="Import tree from JSON">⬆ Import</button>
+    <input type="file" id="file-input" accept=".json" onchange="App.importJSON(event)">
+    <button onclick="App.resetToSeed()" title="Reload original data from data/family.json" style="color:var(--muted)">↺ Reset</button>
+  </div>
+</div>
+
+<!-- App Grid -->
+<div class="app-grid">
+  <!-- Tree Panel -->
+  <div class="tree-panel" id="tree-panel">
+    <svg id="tree-svg"></svg>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+
+    <!-- Stats -->
+    <div class="stats-panel" id="stats-panel">
+      <div class="stat-box"><span class="stat-value" id="stat-total">0</span><span class="stat-label">Members</span></div>
+      <div class="stat-box"><span class="stat-value" id="stat-gen">0</span><span class="stat-label">Generations</span></div>
+      <div class="stat-box"><span class="stat-value" id="stat-living">0</span><span class="stat-label">Living</span></div>
+      <div class="stat-box"><span class="stat-value" id="stat-male">0</span><span class="stat-label">Male</span></div>
+      <div class="stat-box"><span class="stat-value" id="stat-female">0</span><span class="stat-label">Female</span></div>
+      <div class="stat-box"><span class="stat-value" id="stat-deceased">0</span><span class="stat-label">Deceased</span></div>
+    </div>
+
+    <!-- Detail Card -->
+    <div class="detail-card" id="detail-card">
+      <div class="detail-empty" id="detail-empty">
+        Select a member on the tree<br>to view their details
+      </div>
+      <div id="detail-content" style="display:none"></div>
+    </div>
+
+    <!-- Add Form (hidden by default) -->
+    <div class="form-card" id="add-form" style="display:none">
+      <div class="form-title">Add Family Member</div>
+      <div class="form-group">
+        <label for="f-name">Full Name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Ahmad Al-Rashid" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="f-arabic">Arabic / Urdu Name</label>
+        <input type="text" id="f-arabic" placeholder="e.g. احمد الرشید" dir="rtl" autocomplete="off">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-gender">Gender</label>
+          <select id="f-gender">
+            <option value="M">Male ♂</option>
+            <option value="F">Female ♀</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="f-birth">Birth Year</label>
+          <input type="number" id="f-birth" placeholder="e.g. 1960" min="1600" max="2030">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-death">Death Year</label>
+          <input type="number" id="f-death" placeholder="Leave blank if living" min="1600" max="2030">
+        </div>
+        <div class="form-group">
+          <label for="f-parent">Parent</label>
+          <select id="f-parent"><option value="">— none —</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="f-spouse">Spouse</label>
+        <select id="f-spouse"><option value="">— none —</option></select>
+      </div>
+      <div class="form-group">
+        <label for="f-bio">Biography / Notes</label>
+        <textarea id="f-bio" placeholder="Occupation, origin, notable achievements…"></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="App.submitAdd()">Add Member</button>
+        <button onclick="App.hideAddForm()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-title">Legend</div>
+      <div class="legend-items">
+        <div class="legend-item"><div class="legend-swatch root"></div> Root ancestor</div>
+        <div class="legend-item"><div class="legend-swatch male"></div> Male ♂</div>
+        <div class="legend-item"><div class="legend-swatch female"></div> Female ♀</div>
+        <div class="legend-item"><div class="legend-swatch deceased"></div> Deceased</div>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+</div><!-- /app-grid -->
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+/* ================================================================
+   SHAJRA · Genealogical Family Tree Application
+   Data stored in localStorage (persisted) + data/family.json (seed)
+   Fully compatible with GitHub Pages static hosting
+   ================================================================ */
+
+const STORAGE_KEY = 'shajra_people_v1';
+const SEED_URL    = 'data/family.json';
+
+// Layout constants
+const NODE_W = 150, NODE_H = 52, H_GAP = 30, V_GAP = 80;
+
+const NS = 'http://www.w3.org/2000/svg';
+
+// ── State ────────────────────────────────────────────────────────
+let people     = [];
+let selectedId = null;
+let zoom       = 1.0;
+let nextId     = 1;
+let positions  = {};
+
+// ── Bootstrap ────────────────────────────────────────────────────
+async function boot() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      people = JSON.parse(saved);
+      nextId = Math.max(...people.map(p => p.id), 0) + 1;
+      hideLoading();
+      render();
+      return;
+    } catch(e) {
+      console.warn('Failed to parse saved data, loading seed.', e);
+    }
+  }
+  // Load seed data
+  try {
+    const res  = await fetch(SEED_URL);
+    if (!res.ok) throw new Error('fetch failed');
+    people = await res.json();
+    nextId = Math.max(...people.map(p => p.id), 0) + 1;
+    saveData();
+  } catch(e) {
+    // If fetch fails (e.g. file:// protocol), start empty
+    people = [];
+    nextId = 1;
+    toast('Could not load seed data. Starting fresh.', false);
+  }
+  hideLoading();
+  render();
+}
+
+function hideLoading() {
+  const el = document.getElementById('loading');
+  el.classList.add('hidden');
+  setTimeout(() => el.remove(), 500);
+}
+
+// ── Persistence ──────────────────────────────────────────────────
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(people));
+}
+
+// ── Layout Algorithm ─────────────────────────────────────────────
+function getSubtreeWidth(id) {
+  const children = people.filter(p => p.parentId === id);
+  if (!children.length) return NODE_W;
+  const childWidths = children.map(c => getSubtreeWidth(c.id));
+  return Math.max(NODE_W, childWidths.reduce((s, w) => s + w, 0) + H_GAP * (children.length - 1));
+}
+
+function place(id, x, y) {
+  positions[id] = { x, y };
+  const children = people.filter(p => p.parentId === id);
+  if (!children.length) return;
+  const totalW = children.map(c => getSubtreeWidth(c.id)).reduce((s, w) => s + w, 0)
+               + H_GAP * (children.length - 1);
+  let cx = x - totalW / 2 + NODE_W / 2;
+  for (const child of children) {
+    const sw = getSubtreeWidth(child.id);
+    place(child.id, cx + sw / 2 - NODE_W / 2, y + NODE_H + V_GAP);
+    cx += sw + H_GAP;
+  }
+}
+
+function buildLayout() {
+  positions = {};
+  const roots = people.filter(p => !p.parentId);
+  if (!roots.length) return 0;
+
+  // Calculate total width needed for all root trees
+  const rootWidths = roots.map(r => getSubtreeWidth(r.id));
+  const totalW = rootWidths.reduce((s, w) => s + w, 0) + H_GAP * (roots.length - 1);
+
+  let rx = totalW / 2 - rootWidths[0] / 2;
+  for (let i = 0; i < roots.length; i++) {
+    place(roots[i].id, rx, 60);
+    rx += rootWidths[i] + H_GAP * 3;
+  }
+
+  // Orphans (parentId set but parent doesn't exist)
+  const orphans = people.filter(p => p.parentId && !people.find(q => q.id === p.parentId) && !positions[p.id]);
+  let ox = totalW + H_GAP * 4;
+  for (const o of orphans) {
+    place(o.id, ox, 60);
+    ox += getSubtreeWidth(o.id) + H_GAP * 2;
+  }
+
+  return getCanvasDimensions();
+}
+
+function getCanvasDimensions() {
+  if (!Object.keys(positions).length) return { w: 600, h: 300, maxGen: 1 };
+  const xs = Object.values(positions).map(p => p.x);
+  const ys = Object.values(positions).map(p => p.y);
+  return {
+    w: Math.max(...xs) + NODE_W + 80,
+    h: Math.max(...ys) + NODE_H + 60,
+    maxGen: Math.round((Math.max(...ys) - 60) / (NODE_H + V_GAP)) + 1
+  };
+}
+
+function getGeneration(id) {
+  let depth = 0, current = people.find(p => p.id === id);
+  while (current && current.parentId) {
+    depth++;
+    current = people.find(p => p.id === current.parentId);
+    if (depth > 50) break; // safety
+  }
+  return depth;
+}
+
+// ── Render ───────────────────────────────────────────────────────
+function render() {
+  const dims = buildLayout();
+  const svg  = document.getElementById('tree-svg');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  if (!people.length) {
+    const txt = document.createElementNS(NS, 'text');
+    txt.setAttribute('x', 200); txt.setAttribute('y', 100);
+    txt.setAttribute('fill', '#6B5C40'); txt.setAttribute('font-family', 'Cormorant Garamond, serif');
+    txt.setAttribute('font-style', 'italic'); txt.setAttribute('font-size', '16');
+    txt.textContent = 'No family members yet. Add the first one →';
+    svg.appendChild(txt);
+    svg.setAttribute('width', 500); svg.setAttribute('height', 200);
+    updateStats(0, 0);
+    return;
+  }
+
+  const w = dims.w * zoom, h = dims.h * zoom;
+  svg.setAttribute('width',  Math.round(w));
+  svg.setAttribute('height', Math.round(h));
+
+  const g = document.createElementNS(NS, 'g');
+  g.setAttribute('transform', `scale(${zoom})`);
+  svg.appendChild(g);
+
+  // Draw generation row labels
+  const genYs = new Set(Object.values(positions).map(p => p.y));
+  let genNum = 1;
+  [...genYs].sort((a, b) => a - b).forEach(y => {
+    const lbl = document.createElementNS(NS, 'text');
+    lbl.setAttribute('x', 4);
+    lbl.setAttribute('y', y + NODE_H / 2 + 5);
+    lbl.setAttribute('class', 'gen-label');
+    lbl.textContent = `Gen ${genNum++}`;
+    g.appendChild(lbl);
+  });
+
+  // Draw spouse links (dashed gold lines)
+  const drawnSpouses = new Set();
+  people.forEach(p => {
+    if (!p.spouseId || drawnSpouses.has(`${p.id}-${p.spouseId}`) || drawnSpouses.has(`${p.spouseId}-${p.id}`)) return;
+    const posA = positions[p.id], posB = positions[p.spouseId];
+    if (!posA || !posB) return;
+    drawnSpouses.add(`${p.id}-${p.spouseId}`);
+
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', posA.x + NODE_W);
+    line.setAttribute('y1', posA.y + NODE_H / 2);
+    line.setAttribute('x2', posB.x);
+    line.setAttribute('y2', posB.y + NODE_H / 2);
+    line.setAttribute('stroke', '#C49A2A');
+    line.setAttribute('stroke-width', '1.5');
+    line.setAttribute('stroke-dasharray', '5,3');
+    line.setAttribute('opacity', '0.7');
+    g.appendChild(line);
+  });
+
+  // Draw parent-child edges (cubic Bézier)
+  people.forEach(p => {
+    if (!p.parentId) return;
+    const posP = positions[p.parentId], posC = positions[p.id];
+    if (!posP || !posC) return;
+
+    const x1 = posP.x + NODE_W / 2, y1 = posP.y + NODE_H;
+    const x2 = posC.x + NODE_W / 2, y2 = posC.y;
+    const mid = (y1 + y2) / 2;
+
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', `M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', '#C8B07A');
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('opacity', '0.6');
+    g.appendChild(path);
+  });
+
+  // Draw nodes
+  people.forEach(p => {
+    const pos = positions[p.id];
+    if (!pos) return;
+
+    const isRoot     = !p.parentId;
+    const isDeceased = p.death !== null && p.death !== undefined;
+    const isSelected = p.id === selectedId;
+
+    const strokeColor = isSelected ? '#8B3A1E'
+                      : isRoot     ? '#C49A2A'
+                      : p.gender === 'M' ? '#2A6B6E' : '#8B3A1E';
+
+    const fillColor = isDeceased  ? '#d0c8b8'
+                    : isSelected  ? '#f5ddd0'
+                    : '#F5EDD8';
+
+    const strokeWidth = isRoot ? 2 : isSelected ? 2.5 : 1.5;
+
+    // Card rect
+    const rect = document.createElementNS(NS, 'rect');
+    rect.setAttribute('x', pos.x); rect.setAttribute('y', pos.y);
+    rect.setAttribute('width', NODE_W); rect.setAttribute('height', NODE_H);
+    rect.setAttribute('rx', '5'); rect.setAttribute('ry', '5');
+    rect.setAttribute('fill', fillColor);
+    rect.setAttribute('stroke', strokeColor);
+    rect.setAttribute('stroke-width', strokeWidth);
+    if (isRoot) rect.setAttribute('filter', 'url(#shadow)');
+    rect.style.cursor = 'pointer';
+    rect.addEventListener('click', () => selectPerson(p.id));
+    rect.addEventListener('mouseenter', () => {
+      if (p.id !== selectedId) {
+        rect.setAttribute('fill', '#F0E2C0');
+        rect.setAttribute('stroke', '#C49A2A');
+      }
+    });
+    rect.addEventListener('mouseleave', () => {
+      if (p.id !== selectedId) {
+        rect.setAttribute('fill', fillColor);
+        rect.setAttribute('stroke', strokeColor);
+      }
+    });
+    g.appendChild(rect);
+
+    // Gender icon
+    const gIcon = document.createElementNS(NS, 'text');
+    gIcon.setAttribute('x', pos.x + NODE_W - 10);
+    gIcon.setAttribute('y', pos.y + 13);
+    gIcon.setAttribute('text-anchor', 'end');
+    gIcon.setAttribute('font-size', '10');
+    gIcon.setAttribute('fill', p.gender === 'M' ? '#2A6B6E' : '#8B3A1E');
+    gIcon.textContent = p.gender === 'M' ? '♂' : '♀';
+    gIcon.style.pointerEvents = 'none';
+    g.appendChild(gIcon);
+
+    // Name
+    const nameText = document.createElementNS(NS, 'text');
+    nameText.setAttribute('x', pos.x + 8);
+    nameText.setAttribute('y', pos.y + 22);
+    nameText.setAttribute('font-family', 'Amiri, serif');
+    nameText.setAttribute('font-size', '14');
+    nameText.setAttribute('font-weight', 'bold');
+    nameText.setAttribute('fill', isDeceased ? '#6B5C40' : '#111111');
+    nameText.textContent = p.name.length > 18 ? p.name.slice(0, 17) + '…' : p.name;
+    nameText.style.pointerEvents = 'none';
+    g.appendChild(nameText);
+
+    // Years
+    const birthStr = p.birth || '?';
+    const deathStr = p.death ? String(p.death) : 'living';
+    const yearsText = document.createElementNS(NS, 'text');
+    yearsText.setAttribute('x', pos.x + 8);
+    yearsText.setAttribute('y', pos.y + 38);
+    yearsText.setAttribute('font-family', 'Cormorant Garamond, serif');
+    yearsText.setAttribute('font-size', '11');
+    yearsText.setAttribute('fill', '#6B5C40');
+    yearsText.textContent = `${birthStr} – ${deathStr}`;
+    yearsText.style.pointerEvents = 'none';
+    g.appendChild(yearsText);
+
+    // Clickable overlay
+    const overlay = document.createElementNS(NS, 'rect');
+    overlay.setAttribute('x', pos.x); overlay.setAttribute('y', pos.y);
+    overlay.setAttribute('width', NODE_W); overlay.setAttribute('height', NODE_H);
+    overlay.setAttribute('fill', 'transparent');
+    overlay.style.cursor = 'pointer';
+    overlay.addEventListener('click', () => selectPerson(p.id));
+    g.appendChild(overlay);
+  });
+
+  // Drop shadow filter
+  const defs = document.createElementNS(NS, 'defs');
+  const filter = document.createElementNS(NS, 'filter');
+  filter.setAttribute('id', 'shadow');
+  filter.setAttribute('x', '-20%'); filter.setAttribute('y', '-20%');
+  filter.setAttribute('width', '140%'); filter.setAttribute('height', '140%');
+  const feDropShadow = document.createElementNS(NS, 'feDropShadow');
+  feDropShadow.setAttribute('dx', '0'); feDropShadow.setAttribute('dy', '2');
+  feDropShadow.setAttribute('stdDeviation', '3');
+  feDropShadow.setAttribute('flood-color', 'rgba(100,70,20,0.2)');
+  filter.appendChild(feDropShadow);
+  defs.appendChild(filter);
+  svg.insertBefore(defs, svg.firstChild);
+
+  updateStats(dims.maxGen, dims);
+  updateDetail();
+}
+
+// ── Stats ────────────────────────────────────────────────────────
+function updateStats(maxGen) {
+  const total    = people.length;
+  const living   = people.filter(p => !p.death).length;
+  const male     = people.filter(p => p.gender === 'M').length;
+  const female   = people.filter(p => p.gender === 'F').length;
+  const deceased = people.filter(p => p.death).length;
+
+  // Compute actual generation depth
+  let realMaxGen = 0;
+  people.forEach(p => {
+    const g = getGeneration(p.id);
+    if (g > realMaxGen) realMaxGen = g;
+  });
+
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-gen').textContent     = realMaxGen + 1 || 0;
+  document.getElementById('stat-living').textContent  = living;
+  document.getElementById('stat-male').textContent    = male;
+  document.getElementById('stat-female').textContent  = female;
+  document.getElementById('stat-deceased').textContent = deceased;
+}
+
+// ── Selection & Detail Panel ─────────────────────────────────────
+function selectPerson(id) {
+  selectedId = id;
+  render();
+}
+
+function updateDetail() {
+  const empty   = document.getElementById('detail-empty');
+  const content = document.getElementById('detail-content');
+
+  if (!selectedId) {
+    empty.style.display   = '';
+    content.style.display = 'none';
+    return;
+  }
+
+  const p = people.find(q => q.id === selectedId);
+  if (!p) {
+    empty.style.display   = '';
+    content.style.display = 'none';
+    return;
+  }
+
+  empty.style.display   = 'none';
+  content.style.display = '';
+
+  const parent   = p.parentId ? people.find(q => q.id === p.parentId) : null;
+  const spouse   = p.spouseId ? people.find(q => q.id === p.spouseId) : null;
+  const children = people.filter(q => q.parentId === p.id);
+  const siblings = parent ? people.filter(q => q.parentId === parent.id && q.id !== p.id) : [];
+
+  let html = `
+    <div class="detail-name">${esc(p.name)}</div>
+    ${p.arabic ? `<span class="detail-arabic">${esc(p.arabic)}</span>` : ''}
+    <div class="detail-divider"></div>
+    <div class="detail-row">
+      <span class="detail-row-label">Gender</span>
+      <span class="detail-row-value">${p.gender === 'M' ? 'Male ♂' : 'Female ♀'}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-row-label">Born</span>
+      <span class="detail-row-value">${p.birth || '—'}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-row-label">Died</span>
+      <span class="detail-row-value">${p.death ? p.death : 'Living'}</span>
+    </div>`;
+
+  if (parent) {
+    html += `<div class="detail-row">
+      <span class="detail-row-label">Parent</span>
+      <span class="detail-row-value"><span class="chip" onclick="selectPerson(${parent.id})">${esc(parent.name)}</span></span>
+    </div>`;
+  }
+
+  if (spouse) {
+    html += `<div class="detail-row">
+      <span class="detail-row-label">Spouse</span>
+      <span class="detail-row-value"><span class="chip" onclick="selectPerson(${spouse.id})">${esc(spouse.name)}</span></span>
+    </div>`;
+  }
+
+  if (children.length) {
+    html += `<div class="detail-row">
+      <span class="detail-row-label">Children (${children.length})</span>
+      <span class="detail-row-value"><div class="chips-row">${children.map(c =>
+        `<span class="chip" onclick="selectPerson(${c.id})">${esc(c.name)}</span>`).join('')}</div></span>
+    </div>`;
+  }
+
+  if (siblings.length) {
+    html += `<div class="detail-row">
+      <span class="detail-row-label">Siblings (${siblings.length})</span>
+      <span class="detail-row-value"><div class="chips-row">${siblings.map(s =>
+        `<span class="chip" onclick="selectPerson(${s.id})">${esc(s.name)}</span>`).join('')}</div></span>
+    </div>`;
+  }
+
+  if (p.bio) {
+    html += `<div class="bio-block">${esc(p.bio)}</div>`;
+  }
+
+  content.innerHTML = html;
+}
+
+// ── Add Member ───────────────────────────────────────────────────
+function populateDropdowns() {
+  const sorted = [...people].sort((a, b) => a.name.localeCompare(b.name));
+  const options = sorted.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  document.getElementById('f-parent').innerHTML = '<option value="">— none —</option>' + options;
+  document.getElementById('f-spouse').innerHTML = '<option value="">— none —</option>' + options;
+}
+
+// ── Public API ───────────────────────────────────────────────────
+const App = {
+  showAddForm() {
+    populateDropdowns();
+    const form = document.getElementById('add-form');
+    form.style.display = '';
+    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  },
+
+  hideAddForm() {
+    document.getElementById('add-form').style.display = 'none';
+    ['f-name','f-arabic','f-birth','f-death','f-bio'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-gender').value = 'M';
+    document.getElementById('f-parent').value = '';
+    document.getElementById('f-spouse').value = '';
+  },
+
+  submitAdd() {
+    const name = document.getElementById('f-name').value.trim();
+    if (!name) { toast('Please enter a name'); return; }
+
+    const person = {
+      id:       nextId++,
+      name,
+      arabic:   document.getElementById('f-arabic').value.trim() || null,
+      gender:   document.getElementById('f-gender').value,
+      birth:    parseInt(document.getElementById('f-birth').value) || null,
+      death:    parseInt(document.getElementById('f-death').value) || null,
+      parentId: parseInt(document.getElementById('f-parent').value) || null,
+      spouseId: parseInt(document.getElementById('f-spouse').value) || null,
+      bio:      document.getElementById('f-bio').value.trim() || null
+    };
+
+    // Reciprocate spouse link
+    if (person.spouseId) {
+      const sp = people.find(p => p.id === person.spouseId);
+      if (sp && !sp.spouseId) sp.spouseId = person.id;
+    }
+
+    people.push(person);
+    saveData();
+    App.hideAddForm();
+    selectedId = person.id;
+    render();
+    toast(`${name} added to the family tree`, true);
+  },
+
+  zoomIn()    { zoom = Math.min(2.5, +(zoom + 0.15).toFixed(2)); render(); },
+  zoomOut()   { zoom = Math.max(0.3, +(zoom - 0.15).toFixed(2)); render(); },
+  zoomReset() { zoom = 1.0; render(); },
+  expandAll() { zoom = 0.7; render(); },
+
+  exportJSON() {
+    const blob = new Blob([JSON.stringify(people, null, 2)], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'shajra-family-tree.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Family tree exported as JSON', true);
+  },
+
+  importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!Array.isArray(data)) throw new Error('Expected an array');
+        people = data;
+        nextId = Math.max(...people.map(p => p.id), 0) + 1;
+        selectedId = null;
+        saveData();
+        render();
+        toast(`Imported ${people.length} family members`, true);
+      } catch(err) {
+        toast('Invalid JSON file. Please use a Shajra export.');
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  },
+
+  async resetToSeed() {
+    if (!confirm('Reset to the original seed data? Your local changes will be lost.')) return;
+    try {
+      const res  = await fetch(SEED_URL + '?t=' + Date.now());
+      if (!res.ok) throw new Error();
+      people = await res.json();
+      nextId = Math.max(...people.map(p => p.id), 0) + 1;
+      selectedId = null;
+      saveData();
+      render();
+      toast('Reset to original family data', true);
+    } catch(e) {
+      toast('Could not load seed data from data/family.json');
+    }
+  }
+};
+
+// ── Utilities ────────────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+let toastTimer;
+function toast(msg, success = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className   = 'show' + (success ? ' success' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, 2800);
+}
+
+// ── Start ────────────────────────────────────────────────────────
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+[
+  {
+    "id": 1,
+    "name": "Ibrahim Al-Rashid",
+    "arabic": "إبراهيم الرشيد",
+    "gender": "M",
+    "birth": 1880,
+    "death": 1955,
+    "parentId": null,
+    "spouseId": 2,
+    "bio": "Patriarch of the Al-Rashid family. Migrated from Lahore to Delhi in 1905. Known for his scholarship in classical Arabic and Persian literature."
+  },
+  {
+    "id": 2,
+    "name": "Fatima Begum",
+    "arabic": "فاطمہ بیگم",
+    "gender": "F",
+    "birth": 1885,
+    "death": 1960,
+    "parentId": null,
+    "spouseId": 1,
+    "bio": "Matriarch of the family. Renowned for her knowledge of herbal medicine and her role in the community as an educator of young women."
+  },
+  {
+    "id": 3,
+    "name": "Yusuf Al-Rashid",
+    "arabic": "یوسف الرشید",
+    "gender": "M",
+    "birth": 1910,
+    "death": 1978,
+    "parentId": 1,
+    "spouseId": 4,
+    "bio": "Eldest son of Ibrahim. Served as a civil officer during the transition period. Settled in Karachi after partition."
+  },
+  {
+    "id": 4,
+    "name": "Zainab Noor",
+    "arabic": "زینب نور",
+    "gender": "F",
+    "birth": 1915,
+    "death": 1990,
+    "parentId": null,
+    "spouseId": 3,
+    "bio": "Married into the Al-Rashid family in 1932. Known for her poetry, some of which was published in Urdu literary journals of the era."
+  },
+  {
+    "id": 5,
+    "name": "Maryam Al-Rashid",
+    "arabic": "مریم الرشید",
+    "gender": "F",
+    "birth": 1912,
+    "death": 1995,
+    "parentId": 1,
+    "spouseId": null,
+    "bio": "Daughter of Ibrahim. Became a teacher and never married by choice. Dedicated her life to education in rural areas."
+  },
+  {
+    "id": 6,
+    "name": "Hassan Al-Rashid",
+    "arabic": "حسن الرشید",
+    "gender": "M",
+    "birth": 1935,
+    "death": null,
+    "parentId": 3,
+    "spouseId": 7,
+    "bio": "Son of Yusuf. Engineer by profession. Lived in Karachi until 1985, then moved to Toronto."
+  },
+  {
+    "id": 7,
+    "name": "Amina Siddiqui",
+    "arabic": "آمنہ صدیقی",
+    "gender": "F",
+    "birth": 1938,
+    "death": null,
+    "parentId": null,
+    "spouseId": 6,
+    "bio": "Wife of Hassan. Active community organiser in the Pakistani diaspora in Toronto."
+  },
+  {
+    "id": 8,
+    "name": "Omar Al-Rashid",
+    "arabic": "عمر الرشید",
+    "gender": "M",
+    "birth": 1937,
+    "death": 2010,
+    "parentId": 3,
+    "spouseId": 9,
+    "bio": "Second son of Yusuf. Worked as a journalist and editor for a prominent Urdu newspaper in Karachi."
+  },
+  {
+    "id": 9,
+    "name": "Ruqayyah Khan",
+    "arabic": "رقیہ خان",
+    "gender": "F",
+    "birth": 1942,
+    "death": null,
+    "parentId": null,
+    "spouseId": 8,
+    "bio": "Wife of Omar. Retired school principal."
+  },
+  {
+    "id": 10,
+    "name": "Layla Al-Rashid",
+    "arabic": "لیلیٰ الرشید",
+    "gender": "F",
+    "birth": 1962,
+    "death": null,
+    "parentId": 6,
+    "spouseId": null,
+    "bio": "Daughter of Hassan and Amina. Software engineer based in Toronto. Passionate about preserving family heritage through technology."
+  },
+  {
+    "id": 11,
+    "name": "Khalid Al-Rashid",
+    "arabic": "خالد الرشید",
+    "gender": "M",
+    "birth": 1965,
+    "death": null,
+    "parentId": 6,
+    "spouseId": 12,
+    "bio": "Son of Hassan and Amina. Physician specialising in cardiology. Lives in London."
+  },
+  {
+    "id": 12,
+    "name": "Sana Mirza",
+    "arabic": "ثنا مرزا",
+    "gender": "F",
+    "birth": 1968,
+    "death": null,
+    "parentId": null,
+    "spouseId": 11,
+    "bio": "Wife of Khalid. Architect and urban planner."
+  },
+  {
+    "id": 13,
+    "name": "Zaid Al-Rashid",
+    "arabic": "زید الرشید",
+    "gender": "M",
+    "birth": 1965,
+    "death": null,
+    "parentId": 8,
+    "spouseId": null,
+    "bio": "Son of Omar. Academic researcher specialising in South Asian history."
+  },
+  {
+    "id": 14,
+    "name": "Noor Al-Rashid",
+    "arabic": "نور الرشید",
+    "gender": "F",
+    "birth": 1968,
+    "death": null,
+    "parentId": 8,
+    "spouseId": null,
+    "bio": "Daughter of Omar and Ruqayyah. Journalist and documentary filmmaker."
+  },
+  {
+    "id": 15,
+    "name": "Adam Al-Rashid",
+    "arabic": "آدم الرشید",
+    "gender": "M",
+    "birth": 1995,
+    "death": null,
+    "parentId": 11,
+    "spouseId": null,
+    "bio": "Son of Khalid and Sana. Medical student in London."
+  },
+  {
+    "id": 16,
+    "name": "Sara Al-Rashid",
+    "arabic": "سارہ الرشید",
+    "gender": "F",
+    "birth": 1998,
+    "death": null,
+    "parentId": 11,
+    "spouseId": null,
+    "bio": "Daughter of Khalid and Sana. Architecture student, following in her mother's footsteps."
+  }
+]
