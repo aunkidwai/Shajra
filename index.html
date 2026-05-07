@@ -598,7 +598,7 @@ textarea {
 
     <!-- Add Form (hidden by default) -->
     <div class="form-card" id="add-form" style="display:none">
-      <div class="form-title">Add Family Member</div>
+      <div class="form-title" id="form-title">Add Family Member</div>
       <div class="form-group">
         <label for="f-name">Full Name *</label>
         <input type="text" id="f-name" placeholder="e.g. Ahmad Al-Rashid" autocomplete="off">
@@ -635,7 +635,7 @@ textarea {
         <label for="f-deceased" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);cursor:pointer">Deceased</label>
       </div>
       <div class="form-actions">
-        <button class="btn-primary" onclick="App.submitAdd()">Add Member</button>
+        <button class="btn-primary" id="form-submit-btn" onclick="App.submitForm()">Add Member</button>
         <button onclick="App.hideAddForm()">Cancel</button>
       </div>
     </div>
@@ -675,6 +675,7 @@ const NS = 'http://www.w3.org/2000/svg';
 // ── State ────────────────────────────────────────────────────────
 let people     = [];
 let selectedId = null;
+let editingId  = null;
 let zoom       = 1.0;
 let nextId     = 1;
 let positions  = {};
@@ -1076,12 +1077,15 @@ function updateDetail() {
     </div>`;
   }
 
+  html += `<div class="detail-divider"></div>
+    <button onclick="App.showEditForm(${p.id})" style="width:100%;background:var(--teal);color:#fff;border-color:var(--teal);font-size:13px;padding:6px 10px">✎ Edit Member</button>`;
+
   content.innerHTML = html;
 }
 
-// ── Add Member ───────────────────────────────────────────────────
-function populateDropdowns() {
-  const sorted = [...people].sort((a, b) => a.name.localeCompare(b.name));
+// ── Add / Edit Member ─────────────────────────────────────────────
+function populateDropdowns(excludeId = null) {
+  const sorted = [...people].filter(p => p.id !== excludeId).sort((a, b) => a.name.localeCompare(b.name));
   const options = sorted.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
   document.getElementById('f-parent').innerHTML = '<option value="">— none —</option>' + options;
   document.getElementById('f-spouse').innerHTML = '<option value="">— none —</option>' + options;
@@ -1103,35 +1107,89 @@ const App = {
     document.getElementById('f-gender').value = 'M';
     document.getElementById('f-parent').value = '';
     document.getElementById('f-spouse').value = '';
+    document.getElementById('form-title').textContent = 'Add Family Member';
+    document.getElementById('form-submit-btn').textContent = 'Add Member';
+    editingId = null;
   },
 
-  submitAdd() {
+  showEditForm(id) {
+    const p = people.find(q => q.id === id);
+    if (!p) return;
+    editingId = id;
+    populateDropdowns(id);
+    document.getElementById('f-name').value    = p.name || '';
+    document.getElementById('f-arabic').value  = p.arabic || '';
+    document.getElementById('f-gender').value  = p.gender;
+    document.getElementById('f-birth').value   = p.birth || '';
+    document.getElementById('f-deceased').checked = !!p.death;
+    document.getElementById('f-parent').value  = p.parentId || '';
+    document.getElementById('f-spouse').value  = p.spouseId || '';
+    document.getElementById('form-title').textContent = 'Edit Member';
+    document.getElementById('form-submit-btn').textContent = 'Save Changes';
+    const form = document.getElementById('add-form');
+    form.style.display = '';
+    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  },
+
+  submitForm() {
     const name = document.getElementById('f-name').value.trim();
     if (!name) { toast('Please enter a name'); return; }
 
-    const person = {
-      id:       nextId++,
-      name,
-      arabic:   document.getElementById('f-arabic').value.trim() || null,
-      gender:   document.getElementById('f-gender').value,
-      birth:    parseInt(document.getElementById('f-birth').value) || null,
-      death:    document.getElementById('f-deceased').checked,
-      parentId: parseInt(document.getElementById('f-parent').value) || null,
-      spouseId: parseInt(document.getElementById('f-spouse').value) || null
-    };
+    const newParentId = parseInt(document.getElementById('f-parent').value) || null;
+    const newSpouseId = parseInt(document.getElementById('f-spouse').value) || null;
 
-    // Reciprocate spouse link
-    if (person.spouseId) {
-      const sp = people.find(p => p.id === person.spouseId);
-      if (sp && !sp.spouseId) sp.spouseId = person.id;
+    if (editingId) {
+      const p = people.find(q => q.id === editingId);
+      const oldSpouseId = p.spouseId;
+
+      // Unlink old spouse if it changed
+      if (oldSpouseId && oldSpouseId !== newSpouseId) {
+        const oldSpouse = people.find(q => q.id === oldSpouseId);
+        if (oldSpouse && oldSpouse.spouseId === editingId) oldSpouse.spouseId = null;
+      }
+
+      p.name     = name;
+      p.arabic   = document.getElementById('f-arabic').value.trim() || null;
+      p.gender   = document.getElementById('f-gender').value;
+      p.birth    = parseInt(document.getElementById('f-birth').value) || null;
+      p.death    = document.getElementById('f-deceased').checked;
+      p.parentId = newParentId;
+      p.spouseId = newSpouseId;
+
+      // Reciprocate new spouse link
+      if (newSpouseId) {
+        const newSpouse = people.find(q => q.id === newSpouseId);
+        if (newSpouse && !newSpouse.spouseId) newSpouse.spouseId = editingId;
+      }
+
+      saveData();
+      App.hideAddForm();
+      render();
+      toast(`${name} updated`, true);
+    } else {
+      const person = {
+        id:       nextId++,
+        name,
+        arabic:   document.getElementById('f-arabic').value.trim() || null,
+        gender:   document.getElementById('f-gender').value,
+        birth:    parseInt(document.getElementById('f-birth').value) || null,
+        death:    document.getElementById('f-deceased').checked,
+        parentId: newParentId,
+        spouseId: newSpouseId
+      };
+
+      if (person.spouseId) {
+        const sp = people.find(p => p.id === person.spouseId);
+        if (sp && !sp.spouseId) sp.spouseId = person.id;
+      }
+
+      people.push(person);
+      saveData();
+      App.hideAddForm();
+      selectedId = person.id;
+      render();
+      toast(`${name} added to the family tree`, true);
     }
-
-    people.push(person);
-    saveData();
-    App.hideAddForm();
-    selectedId = person.id;
-    render();
-    toast(`${name} added to the family tree`, true);
   },
 
   zoomIn()    { zoom = Math.min(2.5, +(zoom + 0.15).toFixed(2)); render(); },
